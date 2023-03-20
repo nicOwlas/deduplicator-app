@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import path from "path";
 
 type ImageData = {
@@ -17,6 +18,12 @@ type Props = {
 };
 
 function IndexPage({ imageRows }: Props) {
+  const router = useRouter();
+
+  const handleRowClick = (hash: string) => {
+    router.push(`/images/${encodeURIComponent(hash)}`);
+  };
+
   return (
     <table>
       <thead>
@@ -28,7 +35,7 @@ function IndexPage({ imageRows }: Props) {
       </thead>
       <tbody>
         {imageRows.map((row) => (
-          <tr key={row.hash}>
+          <tr key={row.hash} onClick={() => handleRowClick(row.hash)}>
             <td>{row.hash}</td>
             <td>{row.numImages}</td>
             <td>{row.firstImagePath}</td>
