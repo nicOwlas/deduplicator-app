@@ -1,5 +1,4 @@
 // pages/index.tsx
-
 import { useEffect, useState } from "react";
 import JsonTable from "../components/JsonTable";
 import styles from "../styles/index.module.css";
@@ -26,6 +25,7 @@ const Home = () => {
 
   const handleReset = () => {
     localStorage.removeItem("deduplicatorData");
+    localStorage.removeItem("directoryPath");
     setFilePath("");
     setHashes([]);
   };
@@ -52,16 +52,14 @@ const Home = () => {
   };
 
   const handleSelectDirectory = async () => {
-    if ("showDirectoryPicker" in window) {
-      try {
-        const directoryHandle = await (window as any).showDirectoryPicker();
-        localStorage.setItem("directoryPath", directoryHandle.name);
-        setDirectoryPath(directoryHandle.name);
-      } catch (err) {
-        console.error("Error selecting directory:", err);
+    try {
+      const fullPath = await window.electronAPIs.showDirectoryPicker();
+      if (fullPath) {
+        localStorage.setItem("directoryPath", fullPath);
+        setDirectoryPath(fullPath);
       }
-    } else {
-      alert("Your browser does not support directory selection.");
+    } catch (err) {
+      console.error("Error selecting directory:", err);
     }
   };
 

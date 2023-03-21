@@ -1,7 +1,8 @@
 // preload.js
 const { contextBridge, ipcRenderer } = require("electron");
-const fs = require("fs");
 
-contextBridge.exposeInMainWorld("fs", {
-  readFileSync: (path, options) => fs.readFileSync(path, options),
+contextBridge.exposeInMainWorld("electronAPIs", {
+  showDirectoryPicker: async () => {
+    return ipcRenderer.invoke("show-directory-picker");
+  },
 });

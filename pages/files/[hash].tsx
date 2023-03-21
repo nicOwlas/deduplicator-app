@@ -14,7 +14,7 @@ const HashFiles: React.FC = () => {
     if (hash) {
       // Replace this with a proper API call or the data source you're using
       const data = JSON.parse(localStorage.getItem("deduplicatorData") || "{}");
-      const pathsForHash = data[hash] || [];
+      const pathsForHash = data[hash as keyof typeof data] || [];
       setPaths(pathsForHash);
     }
   }, [hash]);

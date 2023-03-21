@@ -1,9 +1,23 @@
 // electron.js
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const next = require("next");
 
 const isDev = process.env.NODE_ENV === "development";
+
+const { dialog } = require("electron");
+
+ipcMain.handle("show-directory-picker", async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ["openDirectory"],
+  });
+
+  if (result.filePaths && result.filePaths.length > 0) {
+    return result.filePaths[0];
+  } else {
+    return null;
+  }
+});
 
 let mainWindow;
 
