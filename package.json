@@ -1,13 +1,31 @@
 {
+  "main": "electron.js",
   "private": true,
   "scripts": {
-    "dev": "next",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "electron": "NODE_ENV=development electron .",
+    "electron-prod": "NODE_ENV=production electron .",
+    "electron-start": "electron .",
+    "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && npm run electron-start\"",
+    "electron-pack": "electron-builder --dir",
+    "electron-dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.example.yourappid",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "extends": null
   },
   "dependencies": {
-    "next": "latest",
+    "next": "^13.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-jsonschema-form": "^1.8.1"
@@ -16,6 +34,10 @@
     "@types/node": "^12.12.21",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
-    "typescript": "^4.8.3"
+    "concurrently": "^7.6.0",
+    "electron": "^23.1.4",
+    "electron-builder": "^24.0.0",
+    "typescript": "^4.8.3",
+    "wait-on": "^7.0.1"
   }
 }

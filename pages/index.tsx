@@ -1,4 +1,5 @@
 // pages/index.tsx
+
 import { useEffect, useState } from "react";
 import JsonTable from "../components/JsonTable";
 import styles from "../styles/index.module.css";
