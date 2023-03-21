@@ -6,7 +6,6 @@ interface FileListProps {
 }
 
 const FileList: React.FC<FileListProps> = ({ paths }) => {
-  console.log(paths);
   return (
     <div>
       <h2>Files with the same hash:</h2>

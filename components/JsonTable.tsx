@@ -3,14 +3,19 @@ import React from "react";
 
 interface JsonTableProps {
   data: { [hash: string]: string[] };
+  directoryPath: string;
 }
 
-const JsonTable: React.FC<JsonTableProps> = ({ data }) => {
+const JsonTable: React.FC<JsonTableProps> = ({ data, directoryPath }) => {
+  const getPrefixedPath = (path: string) => {
+    return directoryPath ? `${directoryPath}/${path}` : path;
+  };
   return (
     <table>
       <thead>
         <tr>
           <th>Hash</th>
+          <th>Items</th>
           <th>Path</th>
         </tr>
       </thead>
@@ -20,7 +25,8 @@ const JsonTable: React.FC<JsonTableProps> = ({ data }) => {
             <td>
               <Link href={`/files/${hash}`}>{hash}</Link>
             </td>
-            <td>{paths[0]}</td>
+            <td>{paths.length}</td>
+            <td>{getPrefixedPath(paths[0])}</td>
           </tr>
         ))}
       </tbody>

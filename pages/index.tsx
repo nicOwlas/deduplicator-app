@@ -1,11 +1,12 @@
 // pages/index.tsx
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import JsonTable from "../components/JsonTable";
+import styles from "../styles/index.module.css";
 
 const Home = () => {
   const [filePath, setFilePath] = useState("");
-  const [jsonData, setJsonData] = useState({});
   const [hashes, setHashes] = useState<string[]>([]);
+  const [directoryPath, setDirectoryPath] = useState("");
 
   useEffect(() => {
     const storedData = localStorage.getItem("deduplicatorData");
@@ -14,6 +15,19 @@ const Home = () => {
       setHashes(Object.keys(data));
     }
   }, []);
+
+  useEffect(() => {
+    const storedDirectoryPath = localStorage.getItem("directoryPath");
+    if (storedDirectoryPath) {
+      setDirectoryPath(storedDirectoryPath);
+    }
+  }, []);
+
+  const handleReset = () => {
+    localStorage.removeItem("deduplicatorData");
+    setFilePath("");
+    setHashes([]);
+  };
 
   const handleSelectFile = async () => {
     const fileInput = document.createElement("input");
@@ -27,7 +41,7 @@ const Home = () => {
         const reader = new FileReader();
         reader.onload = () => {
           const parsedJson = JSON.parse(reader.result as string);
-          setJsonData(parsedJson);
+          setHashes(Object.keys(parsedJson));
           localStorage.setItem("deduplicatorData", reader.result as string);
         };
         reader.readAsText(selectedFile);
@@ -36,19 +50,41 @@ const Home = () => {
     fileInput.click();
   };
 
+  const handleSelectDirectory = async () => {
+    if ("showDirectoryPicker" in window) {
+      try {
+        const directoryHandle = await (window as any).showDirectoryPicker();
+        localStorage.setItem("directoryPath", directoryHandle.name);
+        setDirectoryPath(directoryHandle.name);
+      } catch (err) {
+        console.error("Error selecting directory:", err);
+      }
+    } else {
+      alert("Your browser does not support directory selection.");
+    }
+  };
+
   return (
-    <div>
-      <h1>Deduplicator app</h1>
-      <p>Select a JSON file:</p>
-      {hashes.length ? (
-        hashes.map((hash) => (
-          <Link key={hash} href={`/files/${hash}`}>
-            <div>{hash}</div>
-          </Link>
-        ))
-      ) : (
-        <button onClick={handleSelectFile}>Select File</button>
-      )}
+    <div className={styles.container}>
+      <div>
+        <h1 className={styles.title}>👯‍♀️ Deduplicator</h1>
+        <div className={styles.hashList}>
+          {hashes.length ? (
+            <>
+              <button onClick={handleSelectDirectory}>Select Directory</button>
+              <button onClick={handleReset}>Reset</button>
+              <JsonTable
+                data={JSON.parse(
+                  localStorage.getItem("deduplicatorData") || "{}"
+                )}
+                directoryPath={directoryPath}
+              />
+            </>
+          ) : (
+            <button onClick={handleSelectFile}>Select JSON File</button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
