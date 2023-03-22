@@ -5,10 +5,17 @@ import React, { useEffect, useState } from "react";
 import FileList from "../../components/FileList";
 
 const HashFiles: React.FC = () => {
-  const [filePath, setFilePath] = useState("");
   const router = useRouter();
   const { hash } = router.query;
   const [paths, setPaths] = useState<string[]>([]);
+  const [directoryPath, setDirectoryPath] = useState("");
+
+  useEffect(() => {
+    const storedDirectoryPath = localStorage.getItem("directoryPath");
+    if (storedDirectoryPath) {
+      setDirectoryPath(storedDirectoryPath);
+    }
+  }, []);
 
   useEffect(() => {
     if (hash) {
@@ -25,7 +32,7 @@ const HashFiles: React.FC = () => {
       <Link href="/">
         <button>Go Back</button>
       </Link>
-      <FileList paths={paths} />
+      <FileList paths={paths} directoryPath={directoryPath} />
     </div>
   );
 };
