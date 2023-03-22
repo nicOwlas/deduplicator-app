@@ -1,7 +1,8 @@
 // electron.js
 const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("path");
+const fs = require("fs");
 const next = require("next");
+const path = require("path");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -17,6 +18,18 @@ ipcMain.handle("show-directory-picker", async () => {
   } else {
     return null;
   }
+});
+
+ipcMain.handle("read-file", async (event, filePath) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data.buffer);
+      }
+    });
+  });
 });
 
 let mainWindow;

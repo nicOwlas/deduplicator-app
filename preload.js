@@ -6,3 +6,7 @@ contextBridge.exposeInMainWorld("electronAPIs", {
     return ipcRenderer.invoke("show-directory-picker");
   },
 });
+
+contextBridge.exposeInMainWorld("ipcRenderer", {
+  invoke: (channel, data) => ipcRenderer.invoke(channel, data),
+});
