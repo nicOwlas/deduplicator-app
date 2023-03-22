@@ -45,6 +45,7 @@ async function createWindow() {
       contextIsolation: true,
       enableRemoteModule: false,
       preload: path.join(__dirname, "preload.js"),
+      webSecurity: false,
     },
   });
 

@@ -1,0 +1,27 @@
+/* components/FileList.module.css */
+.thumbnailContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.thumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 150px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.imageCaption {
+  margin-top: 5px;
+  text-align: center;
+  font-size: 12px;
+  word-wrap: break-word;
+}
