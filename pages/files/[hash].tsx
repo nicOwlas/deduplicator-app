@@ -8,19 +8,10 @@ const HashFiles: React.FC = () => {
   const router = useRouter();
   const { hash } = router.query;
   const [imagePaths, setImagePaths] = useState<string[]>([]);
-  const [directoryPath, setDirectoryPath] = useState("");
-
-  useEffect(() => {
-    const storedDirectoryPath = localStorage.getItem("directoryPath");
-    if (storedDirectoryPath) {
-      setDirectoryPath(storedDirectoryPath);
-    }
-  }, []);
 
   useEffect(() => {
     if (hash) {
       // Replace this with a proper API call or the data source you're using
-      console.log("Directory path: ", directoryPath);
       const data = JSON.parse(localStorage.getItem("deduplicatorData") || "{}");
       const pathsForHash = data[hash as keyof typeof data] || [];
       const imagePathsForHash = pathsForHash
@@ -34,9 +25,7 @@ const HashFiles: React.FC = () => {
           );
         })
         .map((path) => {
-          if (directoryPath) {
-            path = `${directoryPath}/${path}`; // Add directoryPath as prefix
-          }
+          console.log("Path: ", path);
           return path;
         });
       setImagePaths(imagePathsForHash);

@@ -53,11 +53,12 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
         width: `${width}px`,
         height: `${height}px`,
         overflow: "hidden",
+        textAlign: "center",
       }}
     >
       <img
         src={imageSrc}
-        alt={alt}
+        alt={imageSrc}
         style={{
           width: "auto",
           height: "auto",
@@ -67,6 +68,8 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
           margin: "auto",
         }}
       />
+      <div>{"Caption: " + imageSrc}</div>{" "}
+      {/* Add this div to display the caption */}
     </div>
   );
 };

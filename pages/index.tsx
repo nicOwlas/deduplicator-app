@@ -55,8 +55,22 @@ const Home = () => {
     try {
       const fullPath = await window.electronAPI.showDirectoryPicker();
       if (fullPath) {
+        const oldData = JSON.parse(
+          localStorage.getItem("deduplicatorData") || "{}"
+        );
+        const newData = {};
+
+        for (const hash in oldData) {
+          newData[hash] = oldData[hash].map((path) => {
+            return `${fullPath}/${path}`;
+          });
+        }
+
         localStorage.setItem("directoryPath", fullPath);
         setDirectoryPath(fullPath);
+
+        localStorage.setItem("deduplicatorData", JSON.stringify(newData));
+        setHashes(Object.keys(newData));
       }
     } catch (err) {
       console.error("Error selecting directory:", err);
@@ -76,7 +90,6 @@ const Home = () => {
                 data={JSON.parse(
                   localStorage.getItem("deduplicatorData") || "{}"
                 )}
-                directoryPath={directoryPath}
               />
             </>
           ) : (
