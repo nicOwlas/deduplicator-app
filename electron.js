@@ -5,6 +5,7 @@ const fetch = require("node-fetch");
 const next = require("next");
 const path = require("path");
 const sharp = require("sharp");
+const url = require("url");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -73,7 +74,8 @@ ipcMain.handle("convert-heic", async (event, heicSrc) => {
       const response = await fetch(heicSrc);
       data = await response.buffer();
     } else {
-      data = await fs.promises.readFile(heicSrc);
+      const filePath = url.fileURLToPath(heicSrc);
+      data = await fs.promises.readFile(filePath);
     }
     const convertedBuffer = await sharp(data).toFormat("jpeg").toBuffer();
     return convertedBuffer;
@@ -81,18 +83,6 @@ ipcMain.handle("convert-heic", async (event, heicSrc) => {
     console.error("Error converting HEIC file:", error);
     throw error;
   }
-});
-
-ipcMain.handle("read-file", async (event, filePath) => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data.buffer);
-      }
-    });
-  });
 });
 
 app.on("ready", createWindow);

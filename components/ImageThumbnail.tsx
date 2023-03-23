@@ -5,6 +5,7 @@ export interface ImageThumbnailProps {
   alt: string;
   width?: number;
   height?: number;
+  onHeicConversionRequired?: (src: string) => Promise<Blob>;
 }
 
 const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
@@ -29,7 +30,7 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
     }
 
     if (src) {
-      if (src.endsWith(".heic")) {
+      if (src.endsWith(".heic") || src.endsWith(".HEIC")) {
         convertHeic(src);
       } else {
         setImageSrc(src);

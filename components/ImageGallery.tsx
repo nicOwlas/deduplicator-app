@@ -63,9 +63,11 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
                 width={100}
                 height={100}
                 onHeicConversionRequired={async (src) => {
-                  const convertedBuffer = await window.electronAPI.convertHeic(
+                  const convertedBuffer = await window.electronAPI.invoke(
+                    "convert-heic",
                     src
                   );
+
                   const blob = new Blob([convertedBuffer], {
                     type: "image/jpeg",
                   });
