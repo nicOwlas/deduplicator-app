@@ -49,7 +49,7 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
         >
           {row.map((image, columnIndex) => (
             <div
-              key={columnIndex}
+              key={image}
               style={{
                 boxSizing: "border-box",
                 flex: `1 1 ${columnWidth}%`,

@@ -34,10 +34,6 @@ const HashFiles: React.FC = () => {
           );
         })
         .map((path) => {
-          if (!path.match(/^(?:[a-z]+:)?\/\//i)) {
-            // Check if path is not a URL
-            return `file://${path}`; // Append "file://" to path
-          }
           if (directoryPath) {
             path = `${directoryPath}/${path}`; // Add directoryPath as prefix
           }

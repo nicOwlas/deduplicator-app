@@ -8,6 +8,12 @@ export interface ImageThumbnailProps {
   onHeicConversionRequired?: (src: string) => Promise<Blob>;
 }
 
+// Check if src is an online or local file
+function isValidURL(src) {
+  const pattern = /^(ftp|http|https):\/\/[^ "]+$/;
+  return pattern.test(src);
+}
+
 const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
   src,
   alt,
@@ -30,10 +36,13 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
     }
 
     if (src) {
-      if (src.endsWith(".heic") || src.endsWith(".HEIC")) {
+      const extension = src.split(".").pop()?.toLowerCase();
+      console.log(extension);
+      if (extension === "heic") {
+        console.log("HEIC image:", src);
         convertHeic(src);
       } else {
-        setImageSrc(src);
+        setImageSrc(isValidURL(src) ? src : "file://" + src);
       }
     }
   }, [src, onHeicConversionRequired]);

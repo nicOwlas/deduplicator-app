@@ -5,7 +5,6 @@ const fetch = require("node-fetch");
 const next = require("next");
 const path = require("path");
 const sharp = require("sharp");
-const url = require("url");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -70,12 +69,12 @@ async function createWindow() {
 ipcMain.handle("convert-heic", async (event, heicSrc) => {
   try {
     let data;
+    console.log("File source:", heicSrc);
     if (heicSrc.startsWith("http://") || heicSrc.startsWith("https://")) {
       const response = await fetch(heicSrc);
       data = await response.buffer();
     } else {
-      const filePath = url.fileURLToPath(heicSrc);
-      data = await fs.promises.readFile(filePath);
+      data = await fs.promises.readFile(heicSrc);
     }
     const convertedBuffer = await sharp(data).toFormat("jpeg").toBuffer();
     return convertedBuffer;
