@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>HEIC Converter</title>
+  </head>
+  <body>
+    <script>
+      const { contextBridge, ipcRenderer } = require("electron");
+      const heic2any = require("heic2any");
+
+      contextBridge.exposeInMainWorld("heicConverter", {
+        convert: async (heicSrc) => {
+          try {
+            const response = await fetch(heicSrc);
+            const data = await response.arrayBuffer();
+            const blob = new Blob([data], { type: "image/heic" });
+            const convertedBlob = await heic2any({ blob });
+            const buffer = new Uint8Array(await convertedBlob.arrayBuffer());
+            ipcRenderer.send("heic-converted", buffer);
+          } catch (error) {
+            console.error("Error converting HEIC file:", error);
+            ipcRenderer.send("heic-converted", null, error.message);
+          }
+        },
+      });
+    </script>
+  </body>
+</html>

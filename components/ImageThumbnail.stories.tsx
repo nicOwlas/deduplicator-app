@@ -20,7 +20,7 @@ Default.args = {
 
 export const Heic = Template.bind({});
 Heic.args = {
-  src: "https://github.com/alexcorvi/heic2any/blob/master/demo/10.heic",
+  src: "https://raw.githubusercontent.com/alexcorvi/heic2any/master/demo/10.heic",
   alt: "An example image",
   width: 100,
   height: 100,

@@ -1,8 +1,10 @@
 // electron.js
 const { app, BrowserWindow, ipcMain } = require("electron");
 const fs = require("fs");
+const fetch = require("node-fetch");
 const next = require("next");
 const path = require("path");
+const sharp = require("sharp");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -18,18 +20,6 @@ ipcMain.handle("show-directory-picker", async () => {
   } else {
     return null;
   }
-});
-
-ipcMain.handle("read-file", async (event, filePath) => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filePath, (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data.buffer);
-      }
-    });
-  });
 });
 
 let mainWindow;
@@ -75,6 +65,35 @@ async function createWindow() {
     mainWindow = null;
   });
 }
+
+ipcMain.handle("convert-heic", async (event, heicSrc) => {
+  try {
+    let data;
+    if (heicSrc.startsWith("http://") || heicSrc.startsWith("https://")) {
+      const response = await fetch(heicSrc);
+      data = await response.buffer();
+    } else {
+      data = await fs.promises.readFile(heicSrc);
+    }
+    const convertedBuffer = await sharp(data).toFormat("jpeg").toBuffer();
+    return convertedBuffer;
+  } catch (error) {
+    console.error("Error converting HEIC file:", error);
+    throw error;
+  }
+});
+
+ipcMain.handle("read-file", async (event, filePath) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data.buffer);
+      }
+    });
+  });
+});
 
 app.on("ready", createWindow);
 

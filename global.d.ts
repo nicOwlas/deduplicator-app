@@ -1,7 +1,7 @@
 // global.d.ts
 declare global {
   interface Window {
-    electronAPIs: {
+    electronAPI: {
       showDirectoryPicker: () => Promise<string | null>;
     };
   }

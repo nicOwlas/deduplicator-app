@@ -53,7 +53,7 @@ const Home = () => {
 
   const handleSelectDirectory = async () => {
     try {
-      const fullPath = await window.electronAPIs.showDirectoryPicker();
+      const fullPath = await window.electronAPI.showDirectoryPicker();
       if (fullPath) {
         localStorage.setItem("directoryPath", fullPath);
         setDirectoryPath(fullPath);

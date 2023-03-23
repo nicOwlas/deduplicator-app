@@ -57,7 +57,21 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
                 padding: "5px",
               }}
             >
-              <ImageThumbnail src={image} width={100} height={100} />
+              <ImageThumbnail
+                src={image}
+                alt={"An image"}
+                width={100}
+                height={100}
+                onHeicConversionRequired={async (src) => {
+                  const convertedBuffer = await window.electronAPI.convertHeic(
+                    src
+                  );
+                  const blob = new Blob([convertedBuffer], {
+                    type: "image/jpeg",
+                  });
+                  return blob;
+                }}
+              />
             </div>
           ))}
         </div>

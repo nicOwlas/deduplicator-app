@@ -20,14 +20,29 @@ const HashFiles: React.FC = () => {
   useEffect(() => {
     if (hash) {
       // Replace this with a proper API call or the data source you're using
+      console.log("Directory path: ", directoryPath);
       const data = JSON.parse(localStorage.getItem("deduplicatorData") || "{}");
       const pathsForHash = data[hash as keyof typeof data] || [];
-      const imagePathsForHash = pathsForHash.filter((path) => {
-        const extension = path.split(".").pop()?.toLowerCase();
-        return (
-          extension === "jpg" || extension === "jpeg" || extension === "png"
-        );
-      });
+      const imagePathsForHash = pathsForHash
+        .filter((path) => {
+          const extension = path.split(".").pop()?.toLowerCase();
+          return (
+            extension === "jpg" ||
+            extension === "jpeg" ||
+            extension === "png" ||
+            extension === "heic"
+          );
+        })
+        .map((path) => {
+          if (!path.match(/^(?:[a-z]+:)?\/\//i)) {
+            // Check if path is not a URL
+            return `file://${path}`; // Append "file://" to path
+          }
+          if (directoryPath) {
+            path = `${directoryPath}/${path}`; // Add directoryPath as prefix
+          }
+          return path;
+        });
       setImagePaths(imagePathsForHash);
     }
   }, [hash]);
