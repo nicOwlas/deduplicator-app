@@ -24,27 +24,45 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
   const [imageSrc, setImageSrc] = useState("");
 
   useEffect(() => {
-    async function convertHeic(src: string) {
-      if (onHeicConversionRequired) {
-        try {
-          const convertedBlob = await onHeicConversionRequired(src);
-          setImageSrc(URL.createObjectURL(convertedBlob));
-        } catch (error) {
-          console.error("Error converting HEIC file:", error);
+    async function loadImage() {
+      if (src) {
+        const fileUrl = isValidURL(src) ? src : "file://" + src;
+        const extension = src.split(".").pop()?.toLowerCase();
+
+        if (extension === "heic") {
+          if (onHeicConversionRequired) {
+            try {
+              const convertedBlob = await onHeicConversionRequired(src);
+              setImageSrc(URL.createObjectURL(convertedBlob));
+            } catch (error) {
+              console.error("Error converting HEIC file:", error);
+            }
+          }
+        } else {
+          try {
+            const { format, buffer } = await window.electronAPI.invoke(
+              "extract-thumbnail",
+              src
+            );
+            if (buffer) {
+              console.log("Succeeded extracting Thumbnail of :", src);
+              setImageSrc(
+                URL.createObjectURL(
+                  new Blob([buffer], { type: `image/${format}` })
+                )
+              );
+            } else {
+              setImageSrc(fileUrl);
+            }
+          } catch (error) {
+            console.error("Error extracting embedded thumbnail:", error);
+            setImageSrc(fileUrl); // Use original image file when extraction fails
+          }
         }
       }
     }
 
-    if (src) {
-      const extension = src.split(".").pop()?.toLowerCase();
-      console.log(extension);
-      if (extension === "heic") {
-        console.log("HEIC image:", src);
-        convertHeic(src);
-      } else {
-        setImageSrc(isValidURL(src) ? src : "file://" + src);
-      }
-    }
+    loadImage();
   }, [src, onHeicConversionRequired]);
 
   return (
@@ -58,7 +76,7 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
     >
       <img
         src={imageSrc}
-        alt={imageSrc}
+        alt={alt}
         style={{
           width: "auto",
           height: "auto",
@@ -68,8 +86,7 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
           margin: "auto",
         }}
       />
-      <div>{"Caption: " + imageSrc}</div>{" "}
-      {/* Add this div to display the caption */}
+      <div>{imageSrc}</div>
     </div>
   );
 };

@@ -25,7 +25,6 @@ const HashFiles: React.FC = () => {
           );
         })
         .map((path) => {
-          console.log("Path: ", path);
           return path;
         });
       setImagePaths(imagePathsForHash);

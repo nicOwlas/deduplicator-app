@@ -5,6 +5,7 @@ const fetch = require("node-fetch");
 const next = require("next");
 const path = require("path");
 const sharp = require("sharp");
+const exifr = require("exifr");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -69,7 +70,6 @@ async function createWindow() {
 ipcMain.handle("convert-heic", async (event, heicSrc) => {
   try {
     let data;
-    console.log("File source:", heicSrc);
     if (heicSrc.startsWith("http://") || heicSrc.startsWith("https://")) {
       const response = await fetch(heicSrc);
       data = await response.buffer();
@@ -80,6 +80,28 @@ ipcMain.handle("convert-heic", async (event, heicSrc) => {
     return convertedBuffer;
   } catch (error) {
     console.error("Error converting HEIC file:", error);
+    throw error;
+  }
+});
+
+// Add a new event handler for extracting the embedded thumbnail
+ipcMain.handle("extract-thumbnail", async (event, imagePath) => {
+  try {
+    const metadata = await sharp(imagePath).metadata();
+    let embeddedThumbnail = null;
+
+    if (metadata.exif) {
+      try {
+        embeddedThumbnail = await exifr.thumbnail(imagePath);
+      } catch (error) {
+        console.error("Error processing EXIF data:", error);
+        embeddedThumbnail = null;
+      }
+    }
+
+    return { format: metadata.format, buffer: embeddedThumbnail };
+  } catch (error) {
+    console.error("Error extracting embedded thumbnail:", error);
     throw error;
   }
 });
