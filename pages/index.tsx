@@ -1,7 +1,8 @@
 // pages/index.tsx
+import { Button, Container, Heading, HStack, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import ImageTable from "../components/ImageTable";
-import styles from "../styles/index.module.css";
+// import styles from "../styles/index.module.css";
 
 const Home = () => {
   const [filePath, setFilePath] = useState("");
@@ -78,14 +79,26 @@ const Home = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div>
-        <h1 className={styles.title}>👯‍♀️ Deduplicator</h1>
-        <div className={styles.hashList}>
+    <Container maxW="container.xl" py={8}>
+      <VStack spacing={8} align="center">
+        <Heading as="h1" size="2xl">
+          👯‍♀️ Deduplicator
+        </Heading>
+        <VStack align="start" w="100%">
           {hashes.length ? (
             <>
-              <button onClick={handleSelectDirectory}>Select Directory</button>
-              <button onClick={handleReset}>Reset</button>
+              <HStack spacing={4}>
+                <Button
+                  onClick={handleSelectDirectory}
+                  variant="outline"
+                  size="md"
+                >
+                  Select Directory
+                </Button>
+                <Button onClick={handleReset} variant="outline" size="md">
+                  Reset
+                </Button>
+              </HStack>
               <ImageTable
                 data={JSON.parse(
                   localStorage.getItem("deduplicatorData") || "{}"
@@ -93,11 +106,13 @@ const Home = () => {
               />
             </>
           ) : (
-            <button onClick={handleSelectFile}>Select JSON File</button>
+            <Button onClick={handleSelectFile} variant="outline" size="md">
+              Select JSON File
+            </Button>
           )}
-        </div>
-      </div>
-    </div>
+        </VStack>
+      </VStack>
+    </Container>
   );
 };
 
