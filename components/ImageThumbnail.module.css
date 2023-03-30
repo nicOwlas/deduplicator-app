@@ -1,0 +1,14 @@
+/* ImageThumbnail.css */
+
+.thumbnail-container {
+  overflow: hidden;
+  text-align: center;
+}
+
+.thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  margin: auto;
+}

@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import "./ImageThumbnail.module.css";
+
+// ... rest of the code
 
 export interface ImageThumbnailProps {
   src: string;
@@ -67,26 +70,10 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
 
   return (
     <div
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        overflow: "hidden",
-        textAlign: "center",
-      }}
+      className="thumbnail-container"
+      style={{ width: `${width}px`, height: `${height}px` }}
     >
-      <img
-        src={imageSrc}
-        alt={alt}
-        style={{
-          width: "auto",
-          height: "auto",
-          maxWidth: "100%",
-          maxHeight: "100%",
-          display: "block",
-          margin: "auto",
-        }}
-      />
-      <div>{imageSrc}</div>
+      <img src={imageSrc} alt={alt} className="thumbnail-image" />
     </div>
   );
 };

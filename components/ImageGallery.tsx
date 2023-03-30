@@ -60,8 +60,8 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
               <ImageThumbnail
                 src={image}
                 alt={"An image"}
-                width={100}
-                height={100}
+                width={200}
+                height={200}
                 onHeicConversionRequired={async (src) => {
                   const convertedBuffer = await window.electronAPI.invoke(
                     "convert-heic",

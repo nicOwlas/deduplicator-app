@@ -1,0 +1,56 @@
+/* styles/react-table.css */
+
+.react-table {
+  text-align: left;
+  border-collapse: collapse;
+  margin-left: auto; /* Add this line */
+  margin-right: auto; /* Add this line */
+}
+
+.react-table th,
+.react-table td {
+  border: 1px solid #eeeded;
+  padding: 8px;
+}
+
+.react-table .blue {
+  background-color: #ffffff;
+}
+
+.react-table .red {
+  background-color: #eafafa;
+}
+
+.react-table tr:hover {
+  background-color: #ddd;
+}
+
+.react-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #f2f2f2;
+}
+
+.react-table .thumbnail-container {
+  min-width: 120px;
+  height: 50px;
+  transition: all 0.3s ease;
+}
+
+.react-table .thumbnail-container img {
+  border-radius: 5px; /* Add rounded corners to the thumbnail */
+}
+
+.react-table tr {
+  transition: height 0.3s ease;
+}
+
+.react-table tr:hover {
+  height: 100px;
+}
+
+.react-table tr:hover .thumbnail-container {
+  width: 100px !important;
+  height: 100px !important;
+}

@@ -1,6 +1,6 @@
 // pages/index.tsx
 import { useEffect, useState } from "react";
-import JsonTable from "../components/JsonTable";
+import ImageTable from "../components/ImageTable";
 import styles from "../styles/index.module.css";
 
 const Home = () => {
@@ -86,7 +86,7 @@ const Home = () => {
             <>
               <button onClick={handleSelectDirectory}>Select Directory</button>
               <button onClick={handleReset}>Reset</button>
-              <JsonTable
+              <ImageTable
                 data={JSON.parse(
                   localStorage.getItem("deduplicatorData") || "{}"
                 )}
