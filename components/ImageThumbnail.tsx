@@ -1,7 +1,5 @@
+import { AspectRatio, Image } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import "./ImageThumbnail.module.css";
-
-// ... rest of the code
 
 export interface ImageThumbnailProps {
   src: string;
@@ -69,12 +67,19 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
   }, [src, onHeicConversionRequired]);
 
   return (
-    <div
-      className="thumbnail-container"
-      style={{ width: `${width}px`, height: `${height}px` }}
+    <AspectRatio
+      width={width}
+      height={height}
+      ratio={width && height ? width / height : 1}
     >
-      <img src={imageSrc} alt={alt} className="thumbnail-image" />
-    </div>
+      <Image
+        src={imageSrc}
+        borderRadius="md"
+        alt={alt}
+        fallbackSrc="https://via.placeholder.com/150"
+        objectFit="cover"
+      />
+    </AspectRatio>
   );
 };
 
