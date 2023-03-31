@@ -13,9 +13,14 @@ interface ImageTableProps {
 }
 
 const ImageTable = ({ data }: ImageTableProps) => {
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
-    {}
-  );
+  const [expandedGroups, setExpandedGroups] = useState(() => {
+    const groups = Object.keys(data);
+    const collapsed = groups.reduce((acc, group) => {
+      acc[group] = false;
+      return acc;
+    }, {});
+    return collapsed;
+  });
 
   const toggleGroup = (hash: string) => {
     setExpandedGroups((prevState) => ({
@@ -40,15 +45,16 @@ const ImageTable = ({ data }: ImageTableProps) => {
           {Object.keys(data).map((hash) => (
             <>
               <GroupRow
-                key={hash}
                 hash={hash}
                 onClick={() => toggleGroup(hash)}
                 isExpanded={expandedGroups[hash]}
               />
-              {expandedGroups[hash] &&
-                data[hash].map((path, index) => (
-                  <Tr key={`${hash}-${index}`}>
-                    <Td>{rowIndex++}</Td>
+              {data[hash].map((path, index) => {
+                const currentIndex = rowIndex;
+                rowIndex++;
+                return expandedGroups[hash] ? (
+                  <Tr key={`${hash}-${path}-${currentIndex}`}>
+                    <Td>{currentIndex}</Td>
                     <Td>
                       <ImageThumbnail
                         src={path}
@@ -71,7 +77,8 @@ const ImageTable = ({ data }: ImageTableProps) => {
                     </Td>
                     <Td>{path}</Td>
                   </Tr>
-                ))}
+                ) : null;
+              })}
             </>
           ))}
         </Tbody>
