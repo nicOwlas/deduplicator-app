@@ -2,7 +2,7 @@ import { Meta, Story } from "@storybook/react";
 import Gallery, { GalleryProps } from "./ImageGallery";
 
 export default {
-  title: "Components/Gallery",
+  title: "Components/ImageGallery",
   component: Gallery,
 } as Meta;
 

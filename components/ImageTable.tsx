@@ -1,108 +1,94 @@
-import React from "react";
-import { useTable } from "react-table";
-import "./ImageTable.module.css";
+// components/ImageTable.tsx
+import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { useState } from "react";
+import GroupRow from "./GroupRow";
 import ImageThumbnail from "./ImageThumbnail";
-
-interface ImageTableProps {
-  data: { [hash: string]: string[] };
+interface ImageData {
+  id: number;
+  thumbnail: string;
+  path: string;
+  hash: string;
 }
 
-const ImageTable: React.FC<ImageTableProps> = ({ data }) => {
-  const processData = React.useMemo(() => {
-    const formattedData = Object.entries(data).flatMap(([hash, paths]) =>
-      paths.map((path) => ({
-        hash,
-        path,
-      }))
-    );
-    return formattedData;
-  }, [data]);
+export interface ImageTableProps {
+  images: ImageData[];
+}
 
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Index",
-        id: "index",
-        Cell: ({ row }) => <span>{row.index + 1}</span>,
-      },
-      {
-        Header: "Thumbnail",
-        id: "thumbnail",
-        accessor: "path",
-        width: 120,
-        Cell: ({ value }) => (
-          <ImageThumbnail
-            src={value}
-            alt="Thumbnail"
-            width={50}
-            height={50}
-            onHeicConversionRequired={async (src) => {
-              const convertedBuffer = await window.electronAPI.invoke(
-                "convert-heic",
-                src
-              );
+const groupByHash = (images: ImageData[]): Record<string, ImageData[]> => {
+  return images.reduce((acc, image) => {
+    if (!acc[image.hash]) {
+      acc[image.hash] = [];
+    }
+    acc[image.hash].push(image);
+    return acc;
+  }, {} as Record<string, ImageData[]>);
+};
 
-              const blob = new Blob([convertedBuffer], {
-                type: "image/jpeg",
-              });
-              return blob;
-            }}
-          />
-        ),
-      },
-      {
-        Header: "Hash",
-        accessor: "hash",
-      },
-      {
-        Header: "File Path",
-        accessor: "path",
-      },
-    ],
-    []
+const ImageTable: React.FC<ImageTableProps> = ({ images }) => {
+  const groupedImages = groupByHash(images);
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
+    () => {
+      return Object.keys(groupedImages).reduce((acc, hash) => {
+        acc[hash] = false;
+        return acc;
+      }, {} as Record<string, boolean>);
+    }
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data: processData });
-
-  const rowColorClass = (rowIndex, hash) => {
-    if (rowIndex === 0) {
-      return "blue";
-    }
-
-    const previousRow = rows[rowIndex - 1];
-    if (previousRow.original.hash === hash) {
-      return previousRow.colorClass;
-    }
-
-    return previousRow.colorClass === "blue" ? "red" : "blue";
+  const toggleGroup = (hash: string) => {
+    setExpandedGroups({ ...expandedGroups, [hash]: !expandedGroups[hash] });
   };
 
   return (
-    <table {...getTableProps()} className="react-table">
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, rowIndex) => {
-          prepareRow(row);
-          row.colorClass = rowColorClass(rowIndex, row.original.hash);
-          return (
-            <tr {...row.getRowProps()} className={row.colorClass}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <Box>
+      <Table>
+        <Thead>
+          <Tr>
+            <Th>Row Index</Th>
+            <Th>Image Thumbnail</Th>
+            <Th>Image Path</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {Object.keys(groupedImages).map((hash) => (
+            <>
+              <GroupRow hash={hash} onClick={() => toggleGroup(hash)} />
+              {expandedGroups[hash] &&
+                groupedImages[hash].map((image, index) => (
+                  <Tr key={image.id}>
+                    <Td>{index + 1}</Td>
+                    <Td>
+                      <ImageThumbnail
+                        src={image.thumbnail}
+                        alt={`Thumbnail of ${image.path}`}
+                        width={50}
+                        height={50}
+                        onHeicConversionRequired={async (src) => {
+                          const convertedBuffer =
+                            await window.electronAPI.invoke(
+                              "convert-heic",
+                              src
+                            );
+
+                          const blob = new Blob([convertedBuffer], {
+                            type: "image/jpeg",
+                          });
+                          return blob;
+                        }}
+                      />
+                      {/* <Image
+                        src={image.thumbnail}
+                        alt={`Thumbnail of ${image.path}`}
+                      /> */}
+                    </Td>
+                    <Td>{image.path}</Td>
+                  </Tr>
+                ))}
+            </>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
   );
 };
 
