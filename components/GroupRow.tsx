@@ -1,16 +1,38 @@
 // components/GroupRow.tsx
-import { Td, Text, Tr } from "@chakra-ui/react";
+import { Button, HStack, Td, Text, Tr, VStack } from "@chakra-ui/react";
+import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 
 export interface GroupRowProps {
   hash: string;
   onClick: () => void;
+  isExpanded: boolean;
 }
 
-const GroupRow: React.FC<GroupRowProps> = ({ hash, onClick }) => {
+const GroupRow = ({ hash, onClick, isExpanded }: GroupRowProps) => {
+  const Icon = isExpanded ? FiChevronDown : FiChevronRight;
+
   return (
-    <Tr onClick={onClick} _hover={{ bg: "gray.100", cursor: "pointer" }}>
+    <Tr>
       <Td colSpan={3}>
-        <Text fontWeight="bold">Group: {hash}</Text>
+        <Button
+          w="full"
+          justifyContent="flex-start"
+          variant="ghost"
+          onClick={onClick}
+          py={2}
+        >
+          <HStack spacing={4}>
+            <Icon />
+            <VStack alignItems="flex-start">
+              <Text fontSize="sm" color="gray.200">
+                HASH
+              </Text>
+              <Text fontSize="md" color="gray.400">
+                {hash}
+              </Text>
+            </VStack>
+          </HStack>
+        </Button>
       </Td>
     </Tr>
   );

@@ -3,64 +3,56 @@ import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { useState } from "react";
 import GroupRow from "./GroupRow";
 import ImageThumbnail from "./ImageThumbnail";
-interface ImageData {
-  id: number;
-  thumbnail: string;
-  path: string;
-  hash: string;
+
+export interface GroupedImages {
+  [hash: string]: string[];
 }
 
-export interface ImageTableProps {
-  images: ImageData[];
+interface ImageTableProps {
+  data: GroupedImages;
 }
 
-const groupByHash = (images: ImageData[]): Record<string, ImageData[]> => {
-  return images.reduce((acc, image) => {
-    if (!acc[image.hash]) {
-      acc[image.hash] = [];
-    }
-    acc[image.hash].push(image);
-    return acc;
-  }, {} as Record<string, ImageData[]>);
-};
-
-const ImageTable: React.FC<ImageTableProps> = ({ images }) => {
-  const groupedImages = groupByHash(images);
+const ImageTable = ({ data }: ImageTableProps) => {
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
-    () => {
-      return Object.keys(groupedImages).reduce((acc, hash) => {
-        acc[hash] = false;
-        return acc;
-      }, {} as Record<string, boolean>);
-    }
+    {}
   );
 
   const toggleGroup = (hash: string) => {
-    setExpandedGroups({ ...expandedGroups, [hash]: !expandedGroups[hash] });
+    setExpandedGroups((prevState) => ({
+      ...prevState,
+      [hash]: !prevState[hash],
+    }));
   };
+
+  let rowIndex = 1;
 
   return (
     <Box>
       <Table>
         <Thead>
           <Tr>
-            <Th>Row Index</Th>
-            <Th>Image Thumbnail</Th>
-            <Th>Image Path</Th>
+            <Th>Index</Th>
+            <Th>Thumbnail</Th>
+            <Th>Path</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {Object.keys(groupedImages).map((hash) => (
+          {Object.keys(data).map((hash) => (
             <>
-              <GroupRow hash={hash} onClick={() => toggleGroup(hash)} />
+              <GroupRow
+                key={hash}
+                hash={hash}
+                onClick={() => toggleGroup(hash)}
+                isExpanded={expandedGroups[hash]}
+              />
               {expandedGroups[hash] &&
-                groupedImages[hash].map((image, index) => (
-                  <Tr key={image.id}>
-                    <Td>{index + 1}</Td>
+                data[hash].map((path, index) => (
+                  <Tr key={`${hash}-${index}`}>
+                    <Td>{rowIndex++}</Td>
                     <Td>
                       <ImageThumbnail
-                        src={image.thumbnail}
-                        alt={`Thumbnail of ${image.path}`}
+                        src={path}
+                        alt={`Thumbnail of ${path}`}
                         width={50}
                         height={50}
                         onHeicConversionRequired={async (src) => {
@@ -76,12 +68,8 @@ const ImageTable: React.FC<ImageTableProps> = ({ images }) => {
                           return blob;
                         }}
                       />
-                      {/* <Image
-                        src={image.thumbnail}
-                        alt={`Thumbnail of ${image.path}`}
-                      /> */}
                     </Td>
-                    <Td>{image.path}</Td>
+                    <Td>{path}</Td>
                   </Tr>
                 ))}
             </>
