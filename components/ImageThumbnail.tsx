@@ -1,4 +1,10 @@
-import { AspectRatio, Image } from "@chakra-ui/react";
+import {
+  AspectRatio,
+  Box,
+  Image,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
 export interface ImageThumbnailProps {
@@ -66,19 +72,54 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
     loadImage();
   }, [src, onHeicConversionRequired]);
 
+  const textColor = useColorModeValue("white", "gray.800");
+  const overlayColor = useColorModeValue(
+    "rgba(0, 0, 0, 0.5)",
+    "rgba(255, 255, 255, 0.5)"
+  );
+
   return (
     <AspectRatio
       width={width}
       height={height}
-      ratio={width && height ? width / height : 1}
+      ratio={1} //{width && height ? width / height : 1}
+      role="group"
+      position="relative"
     >
-      <Image
-        src={imageSrc}
+      <Box
         borderRadius="md"
-        alt={alt}
-        fallbackSrc="https://via.placeholder.com/150"
-        objectFit="cover"
-      />
+        overflow="hidden"
+        // _groupHover={{ filter: "brightness(0.5)" }}
+      >
+        <Image
+          src={imageSrc}
+          alt={alt}
+          fallbackSrc="https://via.placeholder.com/150"
+          objectFit="cover"
+          width="100%"
+          height="100%"
+        />
+        <Box
+          position="absolute"
+          inset={0}
+          bg={overlayColor}
+          borderRadius="md"
+          opacity={0}
+          _groupHover={{ opacity: 1 }}
+        />
+        <Text
+          fontSize="sm"
+          color={textColor}
+          position="absolute"
+          bottom={2}
+          left={2}
+          zIndex="1"
+          opacity={0}
+          _groupHover={{ opacity: 1 }}
+        >
+          {src}
+        </Text>
+      </Box>
     </AspectRatio>
   );
 };

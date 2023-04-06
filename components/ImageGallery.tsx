@@ -21,7 +21,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   };
 
   return (
-    <Box width="100%" padding="1rem">
+    <Box width="100%" padding="1rem" bg="white">
       <SimpleGrid columns={{ base: 3, sm: 4, md: 6, lg: 7 }} spacing="1rem">
         {images.map((image) => (
           <ImageThumbnail

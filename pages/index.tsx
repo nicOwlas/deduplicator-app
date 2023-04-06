@@ -87,9 +87,9 @@ const Home = () => {
 
   return (
     <Box bg="gray.100" minH="100vh">
-      <Container maxW="container.xl" py={8}>
+      <Container maxW="container.xl" py={32}>
         <VStack spacing={8} align="center">
-          <Heading as="h1" size="2xl">
+          <Heading as="h1" size="4xl">
             👯‍♀️ Deduplicator
           </Heading>
           <Flex direction="column" alignItems="center" w="90%">
@@ -120,7 +120,12 @@ const Home = () => {
                 />
               </>
             ) : (
-              <Button onClick={handleSelectFile} variant="outline" size="md">
+              <Button
+                onClick={handleSelectFile}
+                variant="outline"
+                size="md"
+                bg="white"
+              >
                 Select JSON File
               </Button>
             )}

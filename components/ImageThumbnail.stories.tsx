@@ -12,7 +12,7 @@ const Template: Story<ImageThumbnailProps> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  src: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Felis_silvestris_silvestris_small_gradual_decrease_of_quality.png",
+  src: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Panorama_of_the_courtyard_of_the_Great_Mosque_of_Kairouan.jpg",
   alt: "An example image",
   width: 200,
   height: 200,

@@ -1,5 +1,5 @@
 // components/HashTable.tsx
-import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Table, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { ElectronAPI } from "../ElectronAPI";
 import ImageThumbnail from "./ImageThumbnail";
@@ -42,7 +42,9 @@ const HashTable = ({ data }: HashTableProps) => {
               _hover={{ backgroundColor: "gray.200" }}
               onClick={() => router.push(`/details/${hash}`)}
             >
-              <Td>{index + 1}</Td>
+              <Td>
+                <Text color="gray.500">{index + 1}</Text>
+              </Td>
               <Td>
                 <ImageThumbnail
                   src={filePaths[0]}
