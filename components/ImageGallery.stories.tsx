@@ -1,12 +1,12 @@
 import { Meta, Story } from "@storybook/react";
-import Gallery, { GalleryProps } from "./ImageGallery";
+import ImageGallery, { ImageGalleryProps } from "./ImageGallery";
 
 export default {
   title: "Components/ImageGallery",
-  component: Gallery,
+  component: ImageGallery,
 } as Meta;
 
-const Template: Story<GalleryProps> = (args) => <Gallery {...args} />;
+const Template: Story<ImageGalleryProps> = (args) => <ImageGallery {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -1,8 +1,8 @@
-// pages/files/[hash].tsx
+// pages/details/[hash].tsx
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Gallery from "../../components/ImageGallery";
+import ImageGallery from "../../components/ImageGallery";
 
 const HashFiles: React.FC = () => {
   const router = useRouter();
@@ -11,7 +11,6 @@ const HashFiles: React.FC = () => {
 
   useEffect(() => {
     if (hash) {
-      // Replace this with a proper API call or the data source you're using
       const data = JSON.parse(localStorage.getItem("deduplicatorData") || "{}");
       const pathsForHash = data[hash as keyof typeof data] || [];
       const imagePathsForHash = pathsForHash
@@ -37,7 +36,7 @@ const HashFiles: React.FC = () => {
       <Link href="/">
         <button>Go Back</button>
       </Link>
-      {imagePaths.length > 0 && <Gallery images={imagePaths} />}
+      {imagePaths.length > 0 && <ImageGallery images={imagePaths} />}
       {imagePaths.length === 0 && <p>No images found for this hash.</p>}
     </div>
   );

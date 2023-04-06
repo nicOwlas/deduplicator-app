@@ -1,8 +1,8 @@
-// components/ImageTable.tsx
-import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+// components/HashTable.tsx
+import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { ElectronAPI } from "../ElectronAPI";
 import ImageThumbnail from "./ImageThumbnail";
-
 export interface GroupedImages {
   [hash: string]: string[];
 }
@@ -12,9 +12,10 @@ export interface HashTableProps {
 }
 
 const HashTable = ({ data }: HashTableProps) => {
+  const router = useRouter();
   const handleHeicConversionRequired = async (src: string): Promise<Blob> => {
-    const electronAPI = (window as any).electronAPI as ElectronAPI; // Add this line
-    const convertedBuffer = await electronAPI.invoke("convert-heic", src); // Update this line
+    const electronAPI = (window as any).electronAPI as ElectronAPI;
+    const convertedBuffer = await electronAPI.invoke("convert-heic", src);
 
     const blob = new Blob([convertedBuffer], {
       type: "image/jpeg",
@@ -23,34 +24,45 @@ const HashTable = ({ data }: HashTableProps) => {
   };
 
   return (
-    <Table variant="simple">
-      <Thead>
-        <Tr>
-          <Th></Th>
-          <Th></Th>
-          <Th>Hash</Th>
-          <Th>Count of Files</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {Object.entries(data).map(([hash, filePaths], index) => (
-          <Tr key={hash}>
-            <Td>{index + 1}</Td>
-            <Td>
-              <ImageThumbnail
-                src={filePaths[0]}
-                alt={`Thumbnail of ${filePaths[0]}`}
-                width={50}
-                height={50}
-                onHeicConversionRequired={handleHeicConversionRequired}
-              />
-            </Td>
-            <Td>{hash}</Td>
-            <Td>{filePaths.length}</Td>
+    <Box bg="white" width="100%">
+      <Table variant="simple">
+        <Thead bg="gray.50">
+          <Tr>
+            <Th></Th>
+            <Th></Th>
+            <Th>No of Images</Th>
+            <Th>Hash</Th>
           </Tr>
-        ))}
-      </Tbody>
-    </Table>
+        </Thead>
+        <Tbody>
+          {Object.entries(data).map(([hash, filePaths], index) => (
+            <Tr
+              key={hash}
+              cursor="pointer"
+              _hover={{ backgroundColor: "gray.200" }}
+              onClick={() => router.push(`/details/${hash}`)}
+            >
+              <Td>{index + 1}</Td>
+              <Td>
+                <ImageThumbnail
+                  src={filePaths[0]}
+                  alt={`Thumbnail of ${filePaths[0]}`}
+                  width={50}
+                  height={50}
+                  onHeicConversionRequired={handleHeicConversionRequired}
+                />
+              </Td>
+              <Td>{filePaths.length}</Td>
+              <Td>
+                {/* <Link href={`/details/${hash}`} passHref> */}
+                {hash}
+                {/* </Link> */}
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
   );
 };
 

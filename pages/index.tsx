@@ -1,8 +1,15 @@
 // pages/index.tsx
-import { Button, Container, Heading, HStack, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  HStack,
+  Heading,
+  VStack,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import HashTable from "../components/HashTable";
-// import styles from "../styles/index.module.css";
 
 const Home = () => {
   const [filePath, setFilePath] = useState("");
@@ -79,40 +86,48 @@ const Home = () => {
   };
 
   return (
-    <Container maxW="container.xl" py={8}>
-      <VStack spacing={8} align="center">
-        <Heading as="h1" size="2xl">
-          👯‍♀️ Deduplicator
-        </Heading>
-        <VStack align="start" w="100%">
-          {hashes.length ? (
-            <>
-              <HStack spacing={4}>
-                <Button
-                  onClick={handleSelectDirectory}
-                  variant="outline"
-                  size="md"
-                >
-                  Select Directory
-                </Button>
-                <Button onClick={handleReset} variant="outline" size="md">
-                  Reset
-                </Button>
-              </HStack>
-              <HashTable
-                data={JSON.parse(
-                  localStorage.getItem("deduplicatorData") || "{}"
-                )}
-              />
-            </>
-          ) : (
-            <Button onClick={handleSelectFile} variant="outline" size="md">
-              Select JSON File
-            </Button>
-          )}
+    <Box bg="gray.100" minH="100vh">
+      <Container maxW="container.xl" py={8}>
+        <VStack spacing={8} align="center">
+          <Heading as="h1" size="2xl">
+            👯‍♀️ Deduplicator
+          </Heading>
+          <Flex direction="column" alignItems="center" w="90%">
+            {hashes.length ? (
+              <>
+                <HStack spacing={4} alignSelf="flex-start" py="2">
+                  <Button
+                    onClick={handleSelectDirectory}
+                    variant="outline"
+                    size="md"
+                    bg="white"
+                  >
+                    Select Directory
+                  </Button>
+                  <Button
+                    onClick={handleReset}
+                    variant="outline"
+                    size="md"
+                    bg="white"
+                  >
+                    Reset
+                  </Button>
+                </HStack>
+                <HashTable
+                  data={JSON.parse(
+                    localStorage.getItem("deduplicatorData") || "{}"
+                  )}
+                />
+              </>
+            ) : (
+              <Button onClick={handleSelectFile} variant="outline" size="md">
+                Select JSON File
+              </Button>
+            )}
+          </Flex>
         </VStack>
-      </VStack>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 
