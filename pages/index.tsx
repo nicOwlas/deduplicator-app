@@ -1,7 +1,7 @@
 // pages/index.tsx
 import { Button, Container, Heading, HStack, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import ImageTable from "../components/ImageTable";
+import HashTable from "../components/HashTable";
 // import styles from "../styles/index.module.css";
 
 const Home = () => {
@@ -99,7 +99,7 @@ const Home = () => {
                   Reset
                 </Button>
               </HStack>
-              <ImageTable
+              <HashTable
                 data={JSON.parse(
                   localStorage.getItem("deduplicatorData") || "{}"
                 )}

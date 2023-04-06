@@ -1,39 +1,30 @@
 // components/GroupRow.tsx
-import { Button, HStack, Td, Text, Tr, VStack } from "@chakra-ui/react";
-import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { HStack, Text, Tr, VStack } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 export interface GroupRowProps {
   hash: string;
   onClick: () => void;
-  isExpanded: boolean;
 }
-
-const GroupRow = ({ hash, onClick, isExpanded }: GroupRowProps) => {
-  const Icon = isExpanded ? FiChevronDown : FiChevronRight;
-
+const router = useRouter();
+const GroupRow = ({ hash, onClick }: GroupRowProps) => {
   return (
-    <Tr>
-      <Td colSpan={3}>
-        <Button
-          w="full"
-          justifyContent="flex-start"
-          variant="ghost"
-          onClick={onClick}
-          py={2}
-        >
-          <HStack spacing={4}>
-            <Icon />
-            <VStack alignItems="flex-start">
-              <Text fontSize="sm" color="gray.200">
-                HASH
-              </Text>
-              <Text fontSize="md" color="gray.400">
-                {hash}
-              </Text>
-            </VStack>
-          </HStack>
-        </Button>
-      </Td>
+    <Tr
+      key={hash}
+      onClick={() => router.push(`/detail/${hash}`)}
+      cursor="pointer"
+      _hover={{ backgroundColor: "gray.100" }}
+    >
+      <HStack spacing={4}>
+        <VStack alignItems="flex-start">
+          <Text fontSize="sm" color="gray.200">
+            HASH
+          </Text>
+          <Text fontSize="md" color="gray.400">
+            {hash}
+          </Text>
+        </VStack>
+      </HStack>
     </Tr>
   );
 };

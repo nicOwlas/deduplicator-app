@@ -1,14 +1,14 @@
 // src/stories/ImageTable.stories.tsx
 
 import { Meta, Story } from "@storybook/react/types-6-0";
-import ImageTable, { ImageTableProps } from "../components/ImageTable";
+import HashTable, { HashTableProps } from "./HashTable";
 
 export default {
   title: "Components/ImageTable",
-  component: ImageTable,
+  component: HashTable,
 } as Meta;
 
-const Template: Story<ImageTableProps> = (args) => <ImageTable {...args} />;
+const Template: Story<HashTableProps> = (args) => <HashTable {...args} />;
 
 export const Example = Template.bind({});
 // src/stories/ImageTable.stories.tsx
