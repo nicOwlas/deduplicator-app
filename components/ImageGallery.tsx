@@ -38,9 +38,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
         {images.map((image) => (
           <ImageThumbnail
             src={image}
-            alt={`Thumbnail of ${image}`}
+            alt={`${image}`}
             width={150}
             height={150}
+            interactive={true}
             isSelected={selectedImages.has(image)}
             onSelect={handleSelect}
             onHeicConversionRequired={handleHeicConversionRequired}

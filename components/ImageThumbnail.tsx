@@ -13,8 +13,9 @@ export interface ImageThumbnailProps {
   alt: string;
   width?: number;
   height?: number;
+  interactive?: boolean;
   isSelected?: boolean;
-  onSelect: (src: string, selected: boolean) => void;
+  onSelect?: (src: string, selected: boolean) => void;
   onHeicConversionRequired?: (src: string) => Promise<Blob>;
 }
 
@@ -29,7 +30,8 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
   alt,
   width,
   height,
-  isSelected,
+  interactive = true,
+  isSelected = false,
   onSelect,
   onHeicConversionRequired,
 }) => {
@@ -81,6 +83,24 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
 
   const showOverlay = isSelected || isHovered;
 
+  const handleMouseEnter = () => {
+    if (interactive) {
+      setIsHovered(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (interactive) {
+      setIsHovered(false);
+    }
+  };
+
+  const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (interactive && onSelect) {
+      onSelect(src, e.target.checked);
+    }
+  };
+
   const textColor = useColorModeValue("white", "gray.800");
   const overlayColor = useColorModeValue(
     "rgba(0, 0, 0, 0.5)",
@@ -90,8 +110,8 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
   return (
     <Box
       position="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Image
         src={imageSrc}
@@ -100,6 +120,7 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
         width={width}
         height={height}
         filter={showOverlay ? "brightness(50%)" : undefined}
+        borderRadius="lg"
       />
       {showOverlay && (
         <Box
@@ -117,24 +138,26 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
           <Checkbox
             isChecked={isSelected}
             size="lg"
-            onChange={(e) => onSelect(src, e.target.checked)}
+            onChange={handleSelect}
+            colorScheme="white"
           >
             <VisuallyHidden>
               {" "}
               <input
                 type="checkbox"
                 checked={isSelected}
-                onChange={(e) => onSelect(src, e.target.checked)}
+                onChange={handleSelect}
               />
             </VisuallyHidden>
           </Checkbox>
           <Text
             color="white"
-            fontSize="sm"
+            fontSize="xs"
             fontWeight="bold"
             textAlign="left"
-            maxW="100%"
+            maxW={`${width - 2 * 8}px`} // 2 * 4 accounts for the padding
             wordBreak="break-word"
+            noOfLines={6} // Limit the number of lines displayed
           >
             {alt}
           </Text>

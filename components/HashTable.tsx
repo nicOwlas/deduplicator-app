@@ -51,6 +51,7 @@ const HashTable = ({ data }: HashTableProps) => {
                   alt={`Thumbnail of ${filePaths[0]}`}
                   width={50}
                   height={50}
+                  interactive={false}
                   onHeicConversionRequired={handleHeicConversionRequired}
                 />
               </Td>
