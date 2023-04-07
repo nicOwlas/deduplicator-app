@@ -108,13 +108,16 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
           _groupHover={{ opacity: 1 }}
         />
         <Text
-          fontSize="sm"
+          fontSize="xs"
+          fontWeight="semibold"
           color={textColor}
           position="absolute"
           bottom={2}
           left={2}
           zIndex="1"
           opacity={0}
+          overflow="hidden"
+          wordBreak="break-word"
           _groupHover={{ opacity: 1 }}
         >
           {src}
