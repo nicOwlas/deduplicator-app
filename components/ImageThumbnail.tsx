@@ -1,8 +1,9 @@
 import {
-  AspectRatio,
   Box,
+  Checkbox,
   Image,
   Text,
+  VisuallyHidden,
   useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
@@ -12,6 +13,8 @@ export interface ImageThumbnailProps {
   alt: string;
   width?: number;
   height?: number;
+  isSelected?: boolean;
+  onSelect: (src: string, selected: boolean) => void;
   onHeicConversionRequired?: (src: string) => Promise<Blob>;
 }
 
@@ -26,6 +29,8 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
   alt,
   width,
   height,
+  isSelected,
+  onSelect,
   onHeicConversionRequired,
 }) => {
   const [imageSrc, setImageSrc] = useState("");
@@ -72,6 +77,10 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
     loadImage();
   }, [src, onHeicConversionRequired]);
 
+  const [isHovered, setIsHovered] = useState(false);
+
+  const showOverlay = isSelected || isHovered;
+
   const textColor = useColorModeValue("white", "gray.800");
   const overlayColor = useColorModeValue(
     "rgba(0, 0, 0, 0.5)",
@@ -79,51 +88,59 @@ const ImageThumbnail: React.FC<ImageThumbnailProps> = ({
   );
 
   return (
-    <AspectRatio
-      width={width}
-      height={height}
-      ratio={1} //{width && height ? width / height : 1}
-      role="group"
+    <Box
       position="relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <Box
-        borderRadius="md"
-        overflow="hidden"
-        // _groupHover={{ filter: "brightness(0.5)" }}
-      >
-        <Image
-          src={imageSrc}
-          alt={alt}
-          fallbackSrc="https://via.placeholder.com/150"
-          objectFit="cover"
-          width="100%"
-          height="100%"
-        />
+      <Image
+        src={imageSrc}
+        alt={alt}
+        objectFit="cover"
+        width={width}
+        height={height}
+        filter={showOverlay ? "brightness(50%)" : undefined}
+      />
+      {showOverlay && (
         <Box
           position="absolute"
-          inset={0}
-          bg={overlayColor}
-          borderRadius="md"
-          opacity={0}
-          _groupHover={{ opacity: 1 }}
-        />
-        <Text
-          fontSize="xs"
-          fontWeight="semibold"
-          color={textColor}
-          position="absolute"
-          bottom={2}
-          left={2}
-          zIndex="1"
-          opacity={0}
-          overflow="hidden"
-          wordBreak="break-word"
-          _groupHover={{ opacity: 1 }}
+          top={0}
+          left={0}
+          width="100%"
+          height="100%"
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          p={2}
         >
-          {src}
-        </Text>
-      </Box>
-    </AspectRatio>
+          <Checkbox
+            isChecked={isSelected}
+            size="lg"
+            onChange={(e) => onSelect(src, e.target.checked)}
+          >
+            <VisuallyHidden>
+              {" "}
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={(e) => onSelect(src, e.target.checked)}
+              />
+            </VisuallyHidden>
+          </Checkbox>
+          <Text
+            color="white"
+            fontSize="sm"
+            fontWeight="bold"
+            textAlign="left"
+            maxW="100%"
+            wordBreak="break-word"
+          >
+            {alt}
+          </Text>
+        </Box>
+      )}
+    </Box>
   );
 };
 

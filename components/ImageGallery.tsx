@@ -1,7 +1,7 @@
 // components/ImageGallery.tsx
 
 import { Box, SimpleGrid } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { ElectronAPI } from "../ElectronAPI";
 import ImageThumbnail from "./ImageThumbnail";
 
@@ -20,6 +20,18 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
     return blob;
   };
 
+  const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
+
+  const handleSelect = (src: string, isSelected: boolean) => {
+    const newSelectedImages = new Set(selectedImages);
+    if (isSelected) {
+      newSelectedImages.add(src);
+    } else {
+      newSelectedImages.delete(src);
+    }
+    setSelectedImages(newSelectedImages);
+  };
+
   return (
     <Box width="100%" padding="1rem" bg="white">
       <SimpleGrid columns={{ base: 3, sm: 4, md: 6, lg: 7 }} spacing="1rem">
@@ -29,6 +41,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             alt={`Thumbnail of ${image}`}
             width={150}
             height={150}
+            isSelected={selectedImages.has(image)}
+            onSelect={handleSelect}
             onHeicConversionRequired={handleHeicConversionRequired}
           />
         ))}
